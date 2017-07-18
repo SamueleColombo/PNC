@@ -1,0 +1,3 @@
+## Requirements
+
+tensorflow == 1.2
