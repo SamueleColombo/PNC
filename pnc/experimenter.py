@@ -1,9 +1,14 @@
-import multiprocessing
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
+import multiprocessing
 import tensorflow as tf
+
 from tensorflow.contrib import learn
 
 from model import generate_model_fn
+from estimator import generate_estimator_fn
 
 DEFAUTS = {
     'mapping': {0: 0, 1: 1, 2: 2, 3: 3},
@@ -120,7 +125,6 @@ def generate_experimenter_fn(**args):
             features=hparams.features,
         )
 
-        # Return the Experiment.
         return learn.Experiment(
             tf.estimator.Estimator(
                 generate_model_fn(
@@ -136,5 +140,19 @@ def generate_experimenter_fn(**args):
             eval_input_fn=evaluating_fn,
             **args
         )
+
+        # # Return the Experiment.
+        # return learn.Experiment(
+        #     generate_estimator_fn(
+        #         features=hparams.features,
+        #         learning_rate=hparams.learning_rate,
+        #         hidden_units=hparams.hidden_units,
+        #         dropout=hparams.dropout,
+        #         config=run_config,
+        #     ),
+        #     train_input_fn=training_fn,
+        #     eval_input_fn=evaluating_fn,
+        #     **args
+        # )
 
     return _experimenter_fn
