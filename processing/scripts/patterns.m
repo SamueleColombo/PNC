@@ -20,11 +20,11 @@ function F = patterns(ecgs)
         % Check if some pattern are found.
         if ~isempty(P)
             % Select the features to use in the NN.
-            f = features(ecgs(i));
+            f = features(ecgs(i), 'Method', 2);
             % Update the array of the features.
             F = [F f];
             % Update the features-array to ECG signal.
-            ecgs(i).Features = [ecgs(i).Features f];
+            ecgs(i).Features = [ecgs(i).Features f];    
         end
         
     end

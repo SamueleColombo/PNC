@@ -1,9 +1,14 @@
-import multiprocessing
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
+import multiprocessing
 import tensorflow as tf
+
 from tensorflow.contrib import learn
 
 from model import generate_model_fn
+from estimator import generate_estimator_fn
 
 DEFAUTS = {
     'mapping': {0: 0, 1: 1, 2: 2, 3: 3},
@@ -49,6 +54,9 @@ def generate_input_fn(files,
 
     # Create a dictionary using the columns name and the data previously decoded.
     features = dict(zip(features, columns))
+
+    # Pop the column name.
+    features.pop('FN')
 
     # Check if the class need to be mapped:
     if mapping:
@@ -120,11 +128,9 @@ def generate_experimenter_fn(**args):
             features=hparams.features,
         )
 
-        # Return the Experiment.
         return learn.Experiment(
             tf.estimator.Estimator(
                 generate_model_fn(
-                    num_signals=2523,
                     learning_rate=hparams.learning_rate,
                     hidden_units=hparams.hidden_units,
                     dropout=hparams.dropout,
