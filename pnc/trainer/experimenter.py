@@ -55,6 +55,9 @@ def generate_input_fn(files,
     # Create a dictionary using the columns name and the data previously decoded.
     features = dict(zip(features, columns))
 
+    # Pop the column name.
+    features.pop('FN')
+
     # Check if the class need to be mapped:
     if mapping:
         # Map the class using the map argument.
@@ -128,7 +131,6 @@ def generate_experimenter_fn(**args):
         return learn.Experiment(
             tf.estimator.Estimator(
                 generate_model_fn(
-                    num_signals=2523,
                     learning_rate=hparams.learning_rate,
                     hidden_units=hparams.hidden_units,
                     dropout=hparams.dropout,
@@ -140,19 +142,5 @@ def generate_experimenter_fn(**args):
             eval_input_fn=evaluating_fn,
             **args
         )
-
-        # # Return the Experiment.
-        # return learn.Experiment(
-        #     generate_estimator_fn(
-        #         features=hparams.features,
-        #         learning_rate=hparams.learning_rate,
-        #         hidden_units=hparams.hidden_units,
-        #         dropout=hparams.dropout,
-        #         config=run_config,
-        #     ),
-        #     train_input_fn=training_fn,
-        #     eval_input_fn=evaluating_fn,
-        #     **args
-        # )
 
     return _experimenter_fn

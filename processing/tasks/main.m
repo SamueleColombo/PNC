@@ -40,9 +40,16 @@ function O = main(varargin)
     
     % Compute the real quota.
     quota = round(p.Results.Quota .* size(content, 1));
-        
+    
+    % Get the list of the files inside the PNC-inputs directory.
+    flists = dir(strcat(fileparts(path), '../../PNC-data/PNC-inputs/*.csv'));
+    % Extract the file names.
+    names = regexp({flists.name}, '\d+', 'match');
+    % Get the next file index.
+    fi = max(str2double([names{:}])) + 1;
+    
     % Open the train file.
-    fid = fopen(strcat(fileparts(path), '/../../PNC-data/PNC-inputs/train1', '.csv'), 'a');
+    fid = fopen(strcat(fileparts(path), '/../../PNC-data/PNC-inputs/train-', num2str(fi), '.csv'), 'a');
 
     for i = 1:height(content)
         % Load the Signal data.
@@ -63,13 +70,13 @@ function O = main(varargin)
             % Close the current file.
             fclose(fid);
             % Open the eval file.
-            fid = fopen(strcat(fileparts(path), '/../../PNC-data/PNC-inputs/eval1', '.csv'), 'a');
+            fid = fopen(strcat(fileparts(path), '/../../PNC-data/PNC-inputs/eval-', num2str(fi), '.csv'), 'a');
         % Check if it's time to change the output file (test).
         elseif length(quota) == 3 && i == quota(1) + quota(2)
             % Close the current file.
             fclose(fid);
             % Open the test file.
-            fid = fopen(strcat(fileparts(path), '/../../PNC-data/PNC-inputs/test1', '.csv'), 'a');
+            fid = fopen(strcat(fileparts(path), '/../../PNC-data/PNC-inputs/test-', num2str(fi), '.csv'), 'a');
         end
         
         % Append the data at the end of the CSV file.
